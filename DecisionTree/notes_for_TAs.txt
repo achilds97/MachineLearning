@@ -1,0 +1,16 @@
+Hey, just wanted to give a quick intro to my code to help you understand the code a bit better.
+
+I'm not sure how you are grading this, but if you just want to create a tree on the cars dataset and the bank dataset
+the relevant functions are create_cars_tree and create_bank_tree. These will print out results for each height of the
+tree as well as each method of calculation.
+
+If you want to create separate trees the method to create the tree is called id3 and requires a specifically formatted
+dataset, attributes and labels. For a reference for this you can see the top of either the cars or bank method. The
+dataset is the most complicated looking, but it is just a list of dictionaries with one dictionary for each row of the
+dataset. The label column must be called 'label' also. There is additionally a value appended to each row that contains
+the value for this row, so that you can do fractional items if needed. For example if you wanted to do the example row
+in the homework you would add 5/14, 4/14 and 5/14 to the end of each row.
+
+The rest of the functions have comments above them to help explain their purpose. Hopefully it all makes sense.
+
+Thanks for grading!
