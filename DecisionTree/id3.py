@@ -279,6 +279,7 @@ def create_cars_tree():
         split_line = l.split(',')
         for i in range(len(split_line)):
             temp[attribute_headers[i]] = split_line[i].strip()
+        temp['value'] = 1
         examples.append(temp)
 
     file = open('cars_data/test.csv', 'r')
@@ -289,23 +290,27 @@ def create_cars_tree():
         split_line = l.split(',')
         for i in range(len(split_line)):
             temp[attribute_headers[i]] = split_line[i].strip()
+        temp['value'] = 1
         test.append(temp)
 
     for x in range(1,7):
         for test_mode in ['entropy', 'gini', 'me']:
             root_node = id3(examples, attributes, labels, test_mode, 0, x)
-
-            err_count = 0
+            train_error_count = 0
+            test_error_count = 0
+            for i in examples:
+                if get_result(root_node, i, labels) != i['label']:
+                    train_error_count += 1
             for i in test:
-                result = get_result(root_node, i, labels)
-                if i['label'] != result:
-                    err_count += 1
+                if get_result(root_node, i, labels) != i['label']:
+                    test_error_count += 1
 
-            print('Tree length: {} Tree Mode: {}\t{}'.format(x, test_mode[:4], err_count / len(test)))
+            print('Tree length: {} Tree Mode: {}\tTest Error: {} Train Error: {}'
+                  .format(x, test_mode[:4], train_error_count / len(examples), test_error_count / len(examples)))
 
 
-# This function creates a tree based on the bank training data. To do this it reads in the data from the training
-# data and converts any numerical category to numerical by using the median of the dataset. It does the same for the test
+# This function creates a tree based on the bank training data. To do this it reads in the data from the training data
+# and converts any numerical category to numerical by using the median of the dataset. It does the same for the test
 # data and then creates a series of decision trees based off the training data using heights 1-16 and using 3 different
 # methods to generate the purity of the set and prints out the training and test error for each tree.
 def create_bank_tree():
@@ -382,7 +387,7 @@ def create_bank_tree():
                 if get_result(root_node, i, labels) != i['label']:
                     test_error_count += 1
 
-            print('Tree length: {} Tree Mode: {}\tTest Error: {} Train Error: {}'\
+            print('Tree length: {} Tree Mode: {}\tTrain Error: {} Test Error: {}'
                   .format(x, test_mode[:4], train_error_count / len(examples), test_error_count / len(examples)))
 
     common_vals = {}
@@ -406,9 +411,14 @@ def create_bank_tree():
                 if get_result(root_node, i, labels) != i['label']:
                     test_error_count += 1
 
-            print('Tree length: {} Tree Mode: {}\tTest Error: {} Train Error: {}'\
+            print('Tree length: {} Tree Mode: {}\tTrain Error: {} Test Error: {}\\\\'\
                   .format(x, test_mode[:4], train_error_count / len(examples), test_error_count / len(examples)))
 
 
 if __name__ == '__main__':
+    print("Creating Cars Tree\n")
+    create_cars_tree()
+    print("Creating Bank Tree\n")
     create_bank_tree()
+
+
