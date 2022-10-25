@@ -32,7 +32,7 @@ def print_tree(root_node):
 
 
 # This builds a decision tree for the given dataset using the given calculation method and limits it to the max depth.
-def id3(examples, attributes, labels, calc_method, cur_depth, max_depth):
+def id3(examples, attributes, labels, calc_method, cur_depth, max_depth, weights=None):
     if cur_depth < max_depth:
         if get_entropy(examples, labels) == 0:
             return Node(examples[0]['label'])
@@ -42,7 +42,7 @@ def id3(examples, attributes, labels, calc_method, cur_depth, max_depth):
         if calc_method == 'entropy':
             a = get_max_gain(examples, attributes, labels)
         elif calc_method == 'gini':
-            a = get_max_gain_gini(examples, attributes, labels)
+            a = get_max_gain_gini(examples, attributes, labels, weights)
         elif calc_method == 'me':
             a = get_max_gain_me(examples, attributes, labels)
 
@@ -105,7 +105,7 @@ def get_max_gain(examples, attributes, labels):
     return max(gain, key=gain.get)
 
 # Gets the purity of the set using Gini
-def get_gini(examples, labels):
+def get_gini(examples, labels, weights):
     cur_gini = 0
 
     for l in labels:
@@ -122,15 +122,15 @@ def get_gini(examples, labels):
 
 # Returns the attribute that has the highest information gain in the set based on Gini method of purity
 # calculation.
-def get_max_gain_gini(examples, attributes, labels):
+def get_max_gain_gini(examples, attributes, labels, weights):
     gain = {}
-    total_gini = get_gini(examples, labels)
+    total_gini = get_gini(examples, labels, weights)
 
     for a in attributes:
         cur_gain = 0
         for v in attributes[a]:
             filtered_list = filter_list(examples, v, a)
-            gini = get_gini(filtered_list, labels)
+            gini = get_gini(filtered_list, labels, weights)
             cur_gain += ((len(filtered_list) / len(examples)) * gini)
 
         gain[a] = total_gini - cur_gain
