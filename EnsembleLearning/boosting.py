@@ -4,29 +4,34 @@ import DecisionTree.id3 as id3
 
 
 def update_weights(root_node, weights, data):
-    new_weights = np.array([0 for i in range(len(weights))])
+    print('weights:', weights)
+    new_weights = [0 for i in range(len(weights))]
     for i in range(len(weights)):
         alpha = get_alpha(root_node, weights, data)
-        new_weights = weights[i] * math.exp(-1 * alpha * 1 if data[i]['label'] == 'yes' else -1 * 1 if id3.get_result(
-                root_node, data[i], ['yes', 'no']) == 'yes' else -1)
+        print('alpha:',alpha)
+        new_weights[i] = weights[i] * math.exp(-1 * alpha * (1 if data[i]['label'] == 'yes' else -1 * 1 if id3.get_result(
+                root_node, data[i], ['yes', 'no']) == 'yes' else -1))
 
-    weights = weights + (new_weights / sum(weights))
-
-    return weights
+    print('updated weights:', new_weights)
+    new_weights = np.array(new_weights)
+    new_weights = (new_weights / sum(weights))
+    return new_weights
 
 
 def get_alpha(root_node, weights, data):
     error = 0
-
+    print('weights sum:', sum(weights))
     for i in range(len(data)):
         result = id3.get_result(root_node, data[i], ['yes', 'no'])
         if result != data[i]['label']:
             error += weights[i]
+    print('error:', error)
+    print('root:', str(root_node))
     # make sure we don't get a domain error on log2
-    if error < 0 or error > 1:
+    if error <= 0:
         return 1
     else:
-        print(error)
+
         result = 0.5 * math.log2((1 - error) / error)
         return result
 
@@ -85,11 +90,11 @@ def adaboost():
     examples = examples[0:10]
 
     weights = np.array([1 / len(examples) for i in range(len(examples))])
-
+    print(weights)
     boost_set = []
 
     for i in range(100):
-        #print(weights)
+        print(examples)
         for j in range(len(examples)):
             examples[j]['value'] = weights[j]
 
