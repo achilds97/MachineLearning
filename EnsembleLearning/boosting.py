@@ -20,14 +20,13 @@ def get_alpha(root_node, weights, data):
 
     for i in range(len(data)):
         result = id3.get_result(root_node, data[i], ['yes', 'no'])
-        if result != data[-1]:
+        if result != data[i]['label']:
             error += weights[i]
     # make sure we don't get a domain error on log2
     if error < 0 or error > 1:
         return 1
     else:
         print(error)
-        print((1 - error) / error)
         result = 0.5 * math.log2((1 - error) / error)
         return result
 
@@ -90,7 +89,7 @@ def adaboost():
     boost_set = []
 
     for i in range(100):
-        print(weights)
+        #print(weights)
         for j in range(len(examples)):
             examples[j]['value'] = weights[j]
 
@@ -101,7 +100,8 @@ def adaboost():
         weights = update_weights(root_node, weights, examples)
 
     for i in boost_set:
-        print(id3.print_tree(i))
+        pass
+        #print(id3.print_tree(i))
     for i in examples:
         boost_result = get_boost_result(boost_set, i)
 
