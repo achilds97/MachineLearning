@@ -7,7 +7,7 @@ def update_weights(root_node, weights, data):
     new_weights = np.array([0 for i in range(len(weights))])
     for i in range(len(weights)):
         alpha = get_alpha(root_node, weights, data)
-        new_weights = weights[i] * math.exp(alpha * 1 if data[i]['label'] == 'yes' else -1 * 1 if id3.get_result(
+        new_weights = weights[i] * math.exp(-1 * alpha * 1 if data[i]['label'] == 'yes' else -1 * 1 if id3.get_result(
                 root_node, data[i], ['yes', 'no']) == 'yes' else -1)
 
     weights = weights + (new_weights / sum(weights))
