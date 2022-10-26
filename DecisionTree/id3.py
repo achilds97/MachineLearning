@@ -110,9 +110,12 @@ def get_gini(examples, labels, weights):
 
     for l in labels:
         label_count = 0
-        for i in examples:
-            if i['label'] == l:
-                label_count += 1
+        for i in range(len(examples)):
+            if examples[i]['label'] == l:
+                if weights is None:
+                    label_count += 1
+                else:
+                    label_count += weights[i]
 
         if label_count > 0:
             cur_gini += (label_count / len(examples))**2
