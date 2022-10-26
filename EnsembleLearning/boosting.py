@@ -25,7 +25,7 @@ def get_alpha(root_node, weights, data):
         if result != data[-1]:
             error += weights[i]
     # make sure we don't get a domain error on log2
-    if error < 1*10**15 and error > -1*10**15:
+    if error < 1*10**-15 and error > -1*10**-15:
         return 1
     else:
         print('hey', (1-error)/error)
@@ -37,7 +37,6 @@ def get_boost_result(boost, example):
     results = []
     for i in boost:
         results.append(id3.get_result(i, example, ['yes', 'no']))
-        print(results[-1])
 
     return max(results, key=results.count)
 
@@ -92,12 +91,14 @@ def adaboost():
     boost_set = []
 
     for i in range(5):
-        root_node = id3.id3(examples=examples, labels=labels, attributes=attributes, weights=weights, calc_method='gini',
+        for j in range(len(examples)):
+            examples[j]['value'] = weights[j]
+
+        root_node = id3.id3(examples=examples, labels=labels, attributes=attributes, weights=weights, calc_method='entropy',
                             cur_depth=0, max_depth=1)
         boost_set.append(root_node)
 
         update_weights(root_node, weights, examples)
-        print(weights)
 
     for i in boost_set:
         print(id3.print_tree(i))
