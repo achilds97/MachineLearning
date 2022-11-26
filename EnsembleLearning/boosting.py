@@ -9,8 +9,8 @@ def update_weights(root_node, weights, data):
     new_weights = [0 for i in range(len(weights))]
     alpha = get_alpha(root_node, weights, data)
     for i in range(len(weights)):
-        new_weights[i] = weights[i] * math.exp(-1 * alpha * ((1 if data[i]['label'] == 'yes' else -1) *
-                                                             (1 if id3.get_result(root_node, data[i], ['yes', 'no']) == 'yes' else -1)))
+        new_weights[i] = weights[i] * math.exp(-1 * alpha * ((1 if data[i]['label'] == '1' else -1) *
+                                                             (1 if id3.get_result(root_node, data[i], ['1', '0']) == '1' else -1)))
 
     new_weights = np.array(new_weights)
     new_weights = (new_weights / sum(new_weights))
@@ -20,7 +20,7 @@ def update_weights(root_node, weights, data):
 def get_alpha(root_node, weights, data):
     error = 0
     for i in range(len(data)):
-        result = id3.get_result(root_node, data[i], ['yes', 'no'])
+        result = id3.get_result(root_node, data[i], ['1', '0'])
         if result != data[i]['label']:
             error += weights[i]
 
@@ -31,12 +31,12 @@ def get_alpha(root_node, weights, data):
 def get_boost_result(boost, example, alpha_set):
     results = []
     for i in range(len(boost)):
-        results.append((1 if id3.get_result(boost[i], example, ['yes', 'no']) == 'yes' else -1) * alpha_set[i])
+        results.append((1 if id3.get_result(boost[i], example, ['1', '0']) == '1' else -1) * alpha_set[i])
     sum_results = sum(results)
     if sum_results > 0:
-        return 'yes'
+        return '1'
     else:
-        return 'no'
+        return '0'
 
 
 def adaboost():
