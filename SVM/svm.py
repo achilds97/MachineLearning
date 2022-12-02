@@ -22,23 +22,14 @@ def svm_subgradient(vals, epochs, initial_learning_rate, c, a):
 
 
 def svm_dual(alphas, x, y):
-    #Faster with matrix multiplication
-    #Need decision matrix and alpha matrix
+    decision_matrix = np.dot(y, np.ones((len(y), len(y))))
+    print(decision_matrix)
 
-    # I tried both using just multiplication (*) and a dot product because I wasn't sure what you meant when we were
-    # talking earlier, but both methods returned all 0's
-    #decisionMatrix = np.dot(y, np.ones((len(y), len(y))))
-    decisionMatrix = y * np.ones((len(y), len(y)))
+    alpha_matrix = np.dot(alphas, np.ones((len(alphas), len(alphas))))
 
-    # alphaMatrix = np.dot(alphas, np.ones((len(alphas), len(alphas))))
-    alphaMatrix = alphas * np.ones((len(alphas), len(alphas)))
+    x_is = np.dot(x, np.transpose(x))
 
-    #Xis = np.dot(x, np.transpose(x))
-    Xis = x * np.transpose(x)
-
-    # inner = (np.dot(decisionMatrix, np.transpose(decisionMatrix))) * np.dot(alphaMatrix, np.transpose(alphaMatrix)) * Xis
-    inner = (decisionMatrix * np.transpose(decisionMatrix)) * (alphaMatrix * np.transpose(alphaMatrix)) * Xis
-
+    inner = (np.dot(decision_matrix, np.transpose(decision_matrix))) * np.dot(alpha_matrix, np.transpose(alpha_matrix)) * x_is
     return np.sum(inner) * 0.5
 
 
@@ -68,7 +59,8 @@ def get_data(train_path, test_path):
 
     train_x = np.array(train_x)
     train_y = np.array(train_y)
-
+    print(train_x)
+    print(train_y)
     test_x = test.iloc[:, :-1]
     test_y = test.iloc[:, -1]
 
